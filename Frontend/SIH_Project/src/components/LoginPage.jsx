@@ -1,7 +1,8 @@
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useState } from 'react';
+import Lottie from 'lottie-react';
 
-
+import AlumniAnimation from '../assets/Animations/AlumniAnimation.json';
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
@@ -57,16 +58,16 @@ export default function LoginPage() {
 //   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+
+    <div className="flex flex-row gap-2">
+      <div className="flex min-h-full mt-20 flex-1 flex-col justify-center ml-4 py-12  hidden md:block">
+        <Lottie animationData={AlumniAnimation} className="h-full w-full"/>
+      </div>
+      <div className="flex min-h-full flex-1 flex-col justify-center lg:mr-52 py-12 mt-20 ">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img
-          alt="Your Company"
-          src="https://static.tildacdn.one/tild6361-3537-4031-a666-656336393839/UI_Logo_FINAL_Red.png"
-          className="mx-auto h-28 w-28"
-        />
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Sign in to your account
-        </h2>
+      <h2 className="mt-10 text-center text-4xl font-bold leading-9 tracking-tight text-[#4a2c2a]">
+            Sign In
+          </h2>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -88,7 +89,7 @@ export default function LoginPage() {
                 autoComplete="email"
                 onChange={(e) => setEmail(e.target.value)}
                 value={email}
-                className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-[#cb0100] sm:text-sm sm:leading-6"
+                className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6"
               />
             </div>
           </div>
@@ -110,7 +111,7 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
-                className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:font-semibold focus:ring-2 focus:ring-[#cb0100] sm:text-sm sm:leading-6 pr-10" 
+                className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:font-semibold focus:ring-2 sm:text-sm sm:leading-6 pr-10" 
               />
               <button
                 type="button"
@@ -133,5 +134,7 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
+    </div>
+    
   );
 }
