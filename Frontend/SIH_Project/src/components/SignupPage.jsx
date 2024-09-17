@@ -1,5 +1,6 @@
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; 
+import ReCAPTCHA from 'react-google-recaptcha';
 
 
 export default function SignUpPage() {
@@ -10,11 +11,32 @@ export default function SignUpPage() {
     const [age, setAge] = useState('');
     const role = 'academics';
     const [error, setError] = useState('');
+    const [recaptchaToken, setRecaptchaToken] = useState('');
+    const [isRecaptchaVerified, setIsRecaptchaVerified] = useState(false); // New state for reCAPTCHA
+
 
     const togglePasswordVisibility = (e) => {
         e.preventDefault();
         setShowPassword(!showPassword);
     };
+    const handleRecaptchaChange = (token) => {
+        setRecaptchaToken(token);
+        setIsRecaptchaVerified(true); // Set to true when reCAPTCHA is completed
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!recaptchaToken) {
+            setError('Please complete the reCAPTCHA.');
+            setIsRecaptchaVerified(false); // Reset reCAPTCHA verification state
+            return;
+        }
+        // Proceed with the form submission (e.g., send data to backend)
+        console.log({ email, password, name, age, recaptchaToken });
+        // Reset error state
+        setError('');
+    };
+
 
     // const handleSignUp = async (e) => {
     //     e.preventDefault();
@@ -79,7 +101,7 @@ export default function SignUpPage() {
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form action="#" method="POST" className="space-y-6">
+                <form action="#" method="POST" className="space-y-6" onSubmit={handleSubmit}>
                     <div className="flex flex-col">
                         <label
                             htmlFor="email"
@@ -172,9 +194,20 @@ export default function SignUpPage() {
                         </div>
                     </div>
 
+                    <ReCAPTCHA
+                        sitekey="6Ld8OUcqAAAAAIPAq8cSVeA1QVzB826prjigIWMk"
+                        onChange={handleRecaptchaChange}
+                    />
+
                     <div>
+                        {!isRecaptchaVerified && (
+                            <p className="text-red-500 text-sm mb-2">
+                                Please complete the reCAPTCHA to enable the submit button.
+                            </p>
+                        )}
                         <button
-                            
+                            type="submit"
+                            disabled={!isRecaptchaVerified} 
                             className="flex w-full justify-center rounded-md bg-[#cb0100] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cb0100]"
                         >
                             Sign up
