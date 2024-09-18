@@ -18,9 +18,9 @@ public class RegisterRequest {
   private String password;
   private Role role =Role.MANAGER;
   private String college;
-  private String skills;
+
   private String position;
-  private float rating;
+
   private String image;
-  private int projects;
+
 }

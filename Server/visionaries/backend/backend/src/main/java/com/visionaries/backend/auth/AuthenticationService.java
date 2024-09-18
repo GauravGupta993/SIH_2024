@@ -32,9 +32,7 @@ public class AuthenticationService {
         .firstname(request.getFirstname())
         .lastname(request.getLastname())
             .college(request.getCollege())
-            .skills(request.getSkills())
-            .rating(request.getRating())
-            .projects(request.getProjects())
+
             .image(request.getImage())
             .position(request.getPosition())
         .email(request.getEmail())
