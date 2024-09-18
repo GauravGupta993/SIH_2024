@@ -9,6 +9,7 @@ import LoginPage from './components/LoginPage'
 import SignUpPage from './components/SignupPage'
 import Home from './components/Home.jsx'
 import Navbar from './components/Navbar'
+import EventSection from './components/EventSection.jsx';
 function App() {
 
   const [isAuthenticated, setIsAuthenticated] = useState(0);
@@ -65,12 +66,17 @@ function App() {
                 <>{<Navbar/> <SignUpPage/>}</>
               )</>
             } */}
+
+          {/* <Route path='/landing' element={<LandingPage/>}/>
+          <Route path = '/student' element={<StudentPage/>}/> */}
           <Route path="/"
             element={
               isAuthenticated == 1 ? (
                 Role=="Alumini"?<LandingPage/>:<StudentPage/>
               ) : (
                 <><Navbar/><SignUpPage/><Footer/></>
+                // <LandingPage/>
+                
               )
             }
           />
