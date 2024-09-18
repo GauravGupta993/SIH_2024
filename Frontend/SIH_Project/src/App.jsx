@@ -1,28 +1,87 @@
-import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import './App.css'
+import { BrowserRouter,Routes,Route, json } from 'react-router-dom'
+import React, {useState, useEffect } from "react";
 import PrivateRoute from './components/PrivateRoute.jsx';
-import LoginPage from './components/LoginPage';
-import SignUpPage from './components/SignupPage';
-import Navbar from './components/Navbar';
-import LandingPage from './components/LandingPage';
-import StudentLandingPage from './components/studentslanding.jsx'; // Add student landing page
-
-
+import LoginPage from './components/LoginPage'
+import SignUpPage from './components/SignupPage'
+import Home from './components/Home.jsx'
+import Navbar from './components/Navbar'
 function App() {
+
+  const [isAuthenticated, setIsAuthenticated] = useState(0);
+  const [username, setusername] = useState(localStorage.jwtToken);
+  const checkAuthenticated = async () => {
+    setusername(localStorage.jwtToken);
+    const body = { username};
+    try {
+      const res = await fetch("http://127.0.0.1:8080/api/v1/auth/test", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+
+      const parseRes = await res.json();
+      if(parseRes){
+        setIsAuthenticated(1);
+      }
+      else{
+        setIsAuthenticated(0);
+      }
+      // parseRes === 1 ? setIsAuthenticated(1) :  setIsAuthenticated(0);
+      // console.log(parseRes);
+    
+    } catch (err) {
+      console.error(err.message);
+    }
+    // if(localStorage.jwtToken){
+    //   console.log("KEY FOUND!");
+    //   setIsAuthenticated(1);
+    // }
+  };
+
+  useEffect(() => {
+    checkAuthenticated();
+  }, []);
+
+
   return (
+    <>
+    {/* <Navbar/> */}
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<><Navbar /> <SignUpPage /></>} />
-        <Route path='/sign-in' element={<><Navbar /> <LoginPage /></>} />
-
-        {/* Landing page based on role */}
-        <Route path='/landing' element={<><LandingPage /></>} />
-        <Route path='/studentslanding' element={<><StudentLandingPage /></>} />
-
-
+      {/* element={
+              <>isAuthenticated == 1 ? (
+                <Home/>
+              ) : (
+                <>{<Navbar/> <SignUpPage/>}</>
+              )</>
+            } */}
+          <Route path="/"
+            element={
+              isAuthenticated == 1 ? (
+                <Home />
+              ) : (
+                <SignUpPage/>
+              )
+            }
+          />
+          <Route path="/sign-in"
+            element={
+              isAuthenticated == 1 ? (
+                <Home />
+              ) : (
+                <LoginPage/>
+              )
+            }
+          />
+        {/* <Route path='/' element = {<><Navbar/> <SignUpPage/></>}/>
+        <Route path='/sign-in' element = {<><Navbar/> <LoginPage/></>} /> */}
       </Routes>
     </BrowserRouter>
-  );
+    </>
+  )
 }
 
-export default App;
+export default App
