@@ -151,7 +151,7 @@ export default function LoginPage() {
 
           <div className="w-full flex justify-center">
               <ReCAPTCHA
-                sitekey="YOUR_RECAPTCHA_SITE_KEY"
+                sitekey="6Ld8OUcqAAAAAIPAq8cSVeA1QVzB826prjigIWMk"
                 onChange={handleRecaptchaChange}
               />
             </div>
