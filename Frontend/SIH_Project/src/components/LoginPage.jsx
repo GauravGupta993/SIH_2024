@@ -5,7 +5,6 @@ import { Link, useNavigate } from 'react-router-dom'; // Include useNavigate for
 import AlumniAnimation from '../assets/Animations/AlumniAnimation.json';
 import ReCAPTCHA from 'react-google-recaptcha';
 
-
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
@@ -33,18 +32,26 @@ export default function LoginPage() {
       return;
     }
 
-  // Demo credentials for login
-  const demoEmail = 'demo@alumni.com';
-  const demoPassword = 'demo123';
+    // Demo credentials for login
+    const demoEmailAlumni = 'demo@alumni.com';
+    const demoPasswordAlumni = 'demo123';
+    
+    const demoEmailStudent = 'demo@student.com';
+    const demoPasswordStudent = 'student123';
 
-  if (email === demoEmail && password === demoPassword) {
-    // Set a simple auth token in local storage
-    localStorage.setItem('authToken', 'demo-token');
-    // Redirect to the landing page
-    navigate('/landing');
-  } else {
-    alert('Invalid credentials. Please try again.');
-  }
+    if (email === demoEmailAlumni && password === demoPasswordAlumni) {
+      // Set a simple auth token in local storage
+      localStorage.setItem('authToken', 'demo-alumni-token');
+      // Redirect to the alumni landing page
+      navigate('/landing');
+    } else if (email === demoEmailStudent && password === demoPasswordStudent) {
+      // Set a simple auth token in local storage
+      localStorage.setItem('authToken', 'demo-student-token');
+      // Redirect to the student landing page
+      navigate('/studentslanding');
+    } else {
+      alert('Invalid credentials. Please try again.');
+    }
 
     // Reset message
     setRecaptchaMessage('');
@@ -52,8 +59,8 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-row gap-2">
-      <div className="flex min-h-full mt-20 flex-1 flex-col justify-center ml-4 py-12  hidden md:block">
-        <Lottie animationData={AlumniAnimation} className="h-full w-full"/>
+      <div className="flex min-h-full mt-20 flex-1 flex-col justify-center ml-4 py-12 hidden md:block">
+        <Lottie animationData={AlumniAnimation} className="h-full w-full" />
       </div>
       <div className="flex min-h-full flex-1 flex-col justify-center lg:mr-52 py-12 mt-20 ">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -135,9 +142,9 @@ export default function LoginPage() {
                 Sign in
               </button>
             </div>
-            <div className='flex gap-2 text-sm mt-5 justify-center'>
+            <div className="flex gap-2 text-sm mt-5 justify-center">
               <span>Don't have an account?</span>
-              <Link to='/' className='text-blue-500'>
+              <Link to="/" className="text-blue-500">
                 Sign Up
               </Link>
             </div>
