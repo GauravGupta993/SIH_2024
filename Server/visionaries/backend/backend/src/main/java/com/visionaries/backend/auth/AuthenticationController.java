@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Optional;
-@CrossOrigin("0.0.0.0")
+@CrossOrigin("http://localhost:5173")
 @RestController
 
 @RequestMapping("/api/v1/auth")
