@@ -1,6 +1,7 @@
 import './App.css'
 import { BrowserRouter,Routes,Route, json } from 'react-router-dom'
 import LandingPage from './components/LandingPage';
+import Footer from './components/Footer';
 import StudentPage from './components/studentslanding';
 import React, {useState, useEffect } from "react";
 import PrivateRoute from './components/PrivateRoute.jsx';
@@ -69,7 +70,7 @@ function App() {
               isAuthenticated == 1 ? (
                 Role=="Alumini"?<LandingPage/>:<StudentPage/>
               ) : (
-                <SignUpPage/>
+                <><Navbar/><SignUpPage/><Footer/></>
               )
             }
           />
@@ -78,7 +79,7 @@ function App() {
               isAuthenticated == 1 ? (
                 Role=="Alumini"?<LandingPage/>:<StudentPage/>
               ) : (
-                <LoginPage/>
+                <><Navbar/><LoginPage/><Footer/></>
               )
             }
           />
