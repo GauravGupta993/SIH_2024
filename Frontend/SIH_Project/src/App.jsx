@@ -1,5 +1,7 @@
 import './App.css'
 import { BrowserRouter,Routes,Route, json } from 'react-router-dom'
+import LandingPage from './components/LandingPage';
+import StudentPage from './components/studentslanding';
 import React, {useState, useEffect } from "react";
 import PrivateRoute from './components/PrivateRoute.jsx';
 import LoginPage from './components/LoginPage'
@@ -9,6 +11,8 @@ import Navbar from './components/Navbar'
 function App() {
 
   const [isAuthenticated, setIsAuthenticated] = useState(0);
+  const [Role, setRole] = useState(0);
+
   const [username, setusername] = useState(localStorage.jwtToken);
   const checkAuthenticated = async () => {
     setusername(localStorage.jwtToken);
@@ -23,6 +27,8 @@ function App() {
       });
 
       const parseRes = await res.json();
+      setRole(parseRes.position);
+      console.log(Role);
       if(parseRes){
         setIsAuthenticated(1);
       }
@@ -61,7 +67,7 @@ function App() {
           <Route path="/"
             element={
               isAuthenticated == 1 ? (
-                <Home />
+                Role=="Alumini"?<LandingPage/>:<StudentPage/>
               ) : (
                 <SignUpPage/>
               )
@@ -70,7 +76,7 @@ function App() {
           <Route path="/sign-in"
             element={
               isAuthenticated == 1 ? (
-                <Home />
+                Role=="Alumini"?<LandingPage/>:<StudentPage/>
               ) : (
                 <LoginPage/>
               )
