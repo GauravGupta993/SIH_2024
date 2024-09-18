@@ -42,9 +42,15 @@ public class AuthenticationController {
   public ResponseEntity<ProfileResponse> use(
           @RequestBody Test request
   ) {
-    String a=request.getUsername();
+    System.out.println(request.getUsername());
+     String a="hello";
+
+       a=request.getUsername();
+
+
 
     String s1=jwtService.extractUsername(a);
+
     System.out.println(s1);
     Optional<User> user=servicee.getUserByEmail(s1);
     User user1=user.get();
@@ -61,6 +67,7 @@ public class AuthenticationController {
             .college(user1.getCollege())
             .build();
     System.out.println(response);
+    System.out.println("test23");
     return ResponseEntity.ok(response);
   }
 

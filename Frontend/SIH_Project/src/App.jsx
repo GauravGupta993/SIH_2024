@@ -1,5 +1,5 @@
 import './App.css'
-import { BrowserRouter,Routes,Route } from 'react-router-dom'
+import { BrowserRouter,Routes,Route, json } from 'react-router-dom'
 import React, {useState, useEffect } from "react";
 import PrivateRoute from './components/PrivateRoute.jsx';
 import LoginPage from './components/LoginPage'
@@ -9,22 +9,36 @@ import Navbar from './components/Navbar'
 function App() {
 
   const [isAuthenticated, setIsAuthenticated] = useState(0);
+  const [username, setusername] = useState(localStorage.jwtToken);
   const checkAuthenticated = async () => {
-    // try {
-    //   const res = await fetch("http://localhost:5000/authentication/verify", {
-    //     method: "POST",
-    //     headers: { jwt_token: localStorage.token }
-    //   });
+    setusername(localStorage.jwtToken);
+    const body = { username};
+    try {
+      const res = await fetch("http://127.0.0.1:8080/api/v1/auth/test", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
 
-    //   const parseRes = await res.json();
-    //   parseRes === 1 ? setIsAuthenticated(1) : parseRes===2 ? setIsAuthenticated(2) : setIsAuthenticated(0);
-    // } catch (err) {
-    //   console.error(err.message);
-    // }
-    if(localStorage.jwtToken){
-      console.log("KEY FOUND!");
-      setIsAuthenticated(1);
+      const parseRes = await res.json();
+      if(parseRes){
+        setIsAuthenticated(1);
+      }
+      else{
+        setIsAuthenticated(0);
+      }
+      // parseRes === 1 ? setIsAuthenticated(1) :  setIsAuthenticated(0);
+      // console.log(parseRes);
+    
+    } catch (err) {
+      console.error(err.message);
     }
+    // if(localStorage.jwtToken){
+    //   console.log("KEY FOUND!");
+    //   setIsAuthenticated(1);
+    // }
   };
 
   useEffect(() => {

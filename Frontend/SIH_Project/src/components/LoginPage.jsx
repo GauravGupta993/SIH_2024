@@ -65,6 +65,7 @@ export default function LoginPage() {
     // Save the JWT token to localStorage
     localStorage.setItem('jwtToken', token);
     setRecaptchaMessage('');
+    window.location.reload();
   };
 
 //   const handleLogin = async (e) => {
