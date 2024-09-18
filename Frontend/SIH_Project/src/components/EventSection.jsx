@@ -41,7 +41,11 @@ const EventSection = ({ events }) => {
               )}
             </div>
             <button 
-              onClick={() => handleSponsor(event.id)}
+              
+              onClick={() => {
+                window.open('https://rzp.io/l/gecdonate','_blank')
+                handleSponsor(event.id);
+              }}
               className={`mt-6 py-2 px-4 rounded-full font-semibold transition-colors duration-300 flex items-center justify-center ${
                 sponsoredEvents.has(event.id)
                   ? 'bg-green-500 text-white hover:bg-green-600'
