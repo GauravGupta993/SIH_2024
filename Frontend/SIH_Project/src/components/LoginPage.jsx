@@ -2,15 +2,37 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useState } from 'react';
 import Lottie from 'lottie-react';
 import { Link } from 'react-router-dom';
+import ReCAPTCHA from 'react-google-recaptcha';
 import AlumniAnimation from '../assets/Animations/AlumniAnimation.json';
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const [recaptchaToken, setRecaptchaToken] = useState('');
+  const [isRecaptchaVerified, setIsRecaptchaVerified] = useState(false);
+  const [RecaptchaMessage,setRecaptchaMessage] = useState(false);
   const togglePasswordVisibility = (e) => {
     e.preventDefault(); 
     setShowPassword(!showPassword);
+  };
+
+  const handleRecaptchaChange = (token) => {
+    setRecaptchaToken(token);
+    setIsRecaptchaVerified(true); // Set to true when reCAPTCHA is completed
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!recaptchaToken) {
+      setRecaptchaMessage('Please complete the reCAPTCHA.');
+      setIsRecaptchaVerified(false);
+      return;
+    }
+    
+    // Proceed with login logic (e.g., send data to backend)
+    console.log({ email, password, recaptchaToken });
+    // Reset message
+    setRecaptchaMessage('');
   };
 
 //   const handleLogin = async (e) => {
@@ -116,17 +138,33 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#cb0100] hover:text-gray-600"
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#4a2c2a] hover:text-[#cd882a]"
               >
                 {showPassword ? <FaEyeSlash size={24} /> : <FaEye size={24} />}
               </button>
             </div>
           </div>
 
+          <div className="w-full flex justify-center">
+            <ReCAPTCHA
+                        sitekey="6Ld8OUcqAAAAAIPAq8cSVeA1QVzB826prjigIWMk"
+                        onChange={handleRecaptchaChange}
+                    />
+            </div>
+
+            <div>
+            {RecaptchaMessage && (
+                            <p className="text-red-500 text-sm mb-2">
+                                Please complete the reCAPTCHA to enable the submit button.
+                            </p>
+                        )}
+             
+
+            </div>
           <div>
             <button
               
-              className="flex w-full justify-center rounded-md bg-[#cb0100] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cb0100]"
+              className="flex w-full justify-center rounded-md bg-[#4a2c2a] text-white hover:bg-[#cd882a] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cb0100]" onClick={handleSubmit}
             >
               Sign in
             </button>
