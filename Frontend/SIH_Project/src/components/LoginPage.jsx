@@ -3,15 +3,41 @@ import { useState } from 'react';
 import Lottie from 'lottie-react';
 import { Link } from 'react-router-dom';
 import AlumniAnimation from '../assets/Animations/AlumniAnimation.json';
+import ReCAPTCHA from 'react-google-recaptcha';
+
+
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [recaptchaToken, setRecaptchaToken] = useState('');
+  const [isRecaptchaVerified, setIsRecaptchaVerified] = useState(false);
+  const [recaptchaMessage, setRecaptchaMessage] = useState('');
+
 
   const togglePasswordVisibility = (e) => {
     e.preventDefault(); 
     setShowPassword(!showPassword);
   };
+  const handleRecaptchaChange = (token) => {
+    setRecaptchaToken(token);
+    setIsRecaptchaVerified(true); // Set to true when reCAPTCHA is completed
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!recaptchaToken) {
+      setRecaptchaMessage('Please complete the reCAPTCHA.');
+      setIsRecaptchaVerified(false);
+      return;
+    }
+    
+    // Proceed with login logic (e.g., send data to backend)
+    console.log({ email, password, recaptchaToken });
+    // Reset message
+    setRecaptchaMessage('');
+  };
+
 
 //   const handleLogin = async (e) => {
 //     e.preventDefault();
@@ -71,7 +97,7 @@ export default function LoginPage() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form action="#" method="POST" className="space-y-6">
+        <form action="#" method="POST" className="space-y-6" onSubmit={handleSubmit}>
           <div className="flex flex-col">
             <label
               htmlFor="email"
@@ -123,14 +149,27 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div>
-            <button
-              
-              className="flex w-full justify-center rounded-md bg-[#cb0100] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cb0100]"
-            >
-              Sign in
-            </button>
-          </div>
+          <div className="w-full flex justify-center">
+              <ReCAPTCHA
+                sitekey="YOUR_RECAPTCHA_SITE_KEY"
+                onChange={handleRecaptchaChange}
+              />
+            </div>
+
+            {recaptchaMessage && (
+              <p className="text-red-500 text-sm mb-2">
+                {recaptchaMessage}
+              </p>
+            )}
+
+            <div>
+              <button
+                type="submit"
+                className="flex w-full justify-center rounded-md bg-[#cb0100] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cb0100]"
+              >
+                Sign in
+              </button>
+            </div>
           <div className='flex gap-2 text-sm mt-5 justify-center'>
             <span>Don't have an account?</span>
             <Link to='/' className='text-blue-500'>
