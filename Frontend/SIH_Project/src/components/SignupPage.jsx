@@ -1,8 +1,8 @@
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
 import Lottie from 'lottie-react';
-import LoginPage from "./LoginPage";
 import AlumniAnimation from '../assets/Animations/AlumniAnimation.json';
+import ReCAPTCHA from 'react-google-recaptcha';
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -13,7 +13,9 @@ export default function SignUpPage() {
   const [age, setAge] = useState("");
   const role = "academics";
   const [error, setError] = useState("");
-
+  const [recaptchaToken, setRecaptchaToken] = useState('');
+  const [isRecaptchaVerified, setIsRecaptchaVerified] = useState(false);
+ 
   const togglePasswordVisibility = (e) => {
     e.preventDefault();
     setShowPassword(!showPassword);
@@ -22,6 +24,23 @@ export default function SignUpPage() {
     e.preventDefault();
     setShowConfirmPassword(!showConfirmPassword);
   };
+  const handleRecaptchaChange = (token) => {
+    setRecaptchaToken(token);
+    setIsRecaptchaVerified(true); // Set to true when reCAPTCHA is completed
+};
+
+const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!recaptchaToken) {
+        setError('Please complete the reCAPTCHA.');
+        setIsRecaptchaVerified(false); // Reset reCAPTCHA verification state
+        return;
+    }
+    // Proceed with the form submission (e.g., send data to backend)
+    console.log({ email, password, name, age, recaptchaToken });
+    // Reset error state
+    setError('');
+};
 
   // const handleSignUp = async (e) => {
   //     e.preventDefault();
@@ -86,7 +105,7 @@ export default function SignUpPage() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
+          <form action="#" method="POST" className="space-y-6" onSubmit={handleSubmit}>
           <div className="flex flex-col">
               <label
                 htmlFor="name"
@@ -192,13 +211,22 @@ export default function SignUpPage() {
                 </button>
               </div>
             </div>
-
             
 
-            
+            <div className="w-full flex justify-center">
+            <ReCAPTCHA
+                        sitekey="6Ld8OUcqAAAAAIPAq8cSVeA1QVzB826prjigIWMk"
+                        onChange={handleRecaptchaChange}
+                    />
+            </div>
 
             <div>
-              <button className="flex w-full justify-center rounded-md bg-[#cb0100] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cb0100]">
+            {!isRecaptchaVerified && (
+                            <p className="text-red-500 text-sm mb-2">
+                                Please complete the reCAPTCHA to enable the submit button.
+                            </p>
+                        )}
+              <button type = "submit" disabled={!isRecaptchaVerified} className="flex w-full justify-center rounded-md bg-[#cb0100] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cb0100]">
                 Sign up
               </button>
             </div>
@@ -208,3 +236,4 @@ export default function SignUpPage() {
     </div>
   );
 }
+
