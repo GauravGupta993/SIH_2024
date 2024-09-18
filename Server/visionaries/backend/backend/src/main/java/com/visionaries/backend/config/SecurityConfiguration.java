@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
@@ -70,5 +71,13 @@ public class SecurityConfiguration {
         ;
 
         return http.build();
+    }
+
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**") // Allows CORS for all endpoints
+                .allowedOrigins("*") // Allows requests from any origin
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allows specific HTTP methods
+                .allowedHeaders("*") // Allows all headers
+                .allowCredentials(true); // Allows credentials (like cookies)
     }
 }
