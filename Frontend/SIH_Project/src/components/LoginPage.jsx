@@ -1,7 +1,7 @@
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useState } from 'react';
 import Lottie from 'lottie-react';
-
+import { Link } from 'react-router-dom';
 import AlumniAnimation from '../assets/Animations/AlumniAnimation.json';
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -130,6 +130,12 @@ export default function LoginPage() {
             >
               Sign in
             </button>
+          </div>
+          <div className='flex gap-2 text-sm mt-5 justify-center'>
+            <span>Don't have an account?</span>
+            <Link to='/' className='text-blue-500'>
+              Sign Up
+            </Link>
           </div>
         </form>
       </div>
