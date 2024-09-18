@@ -4,6 +4,9 @@ import Lottie from 'lottie-react';
 import { Link } from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 import AlumniAnimation from '../assets/Animations/AlumniAnimation.json';
+
+
+
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
@@ -93,7 +96,7 @@ export default function LoginPage() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form action="#" method="POST" className="space-y-6">
+        <form action="#" method="POST" className="space-y-6" onSubmit={handleSubmit}>
           <div className="flex flex-col">
             <label
               htmlFor="email"
@@ -164,7 +167,7 @@ export default function LoginPage() {
           <div>
             <button
               
-              className="flex w-full justify-center rounded-md bg-[#4a2c2a] text-white hover:bg-[#cd882a] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cb0100]" onClick={handleSubmit}
+              className="flex w-full justify-center rounded-md bg-[#4a2c2a] text-white hover:bg-[#cd882a] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cb0100]" onClick={handleSubmit}
             >
               Sign in
             </button>
