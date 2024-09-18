@@ -1,10 +1,11 @@
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useState } from 'react';
 import Lottie from 'lottie-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AlumniAnimation from '../assets/Animations/AlumniAnimation.json';
 import ReCAPTCHA from 'react-google-recaptcha';
-
+import { signInWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { auth } from "../config/firebase.config";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,10 +14,11 @@ export default function LoginPage() {
   const [recaptchaToken, setRecaptchaToken] = useState('');
   const [isRecaptchaVerified, setIsRecaptchaVerified] = useState(false);
   const [recaptchaMessage, setRecaptchaMessage] = useState('');
-
+  const [verified, setVerified] = useState(false);
+  const [error, setError] = useState('');
 
   const togglePasswordVisibility = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     setShowPassword(!showPassword);
   };
   const handleRecaptchaChange = (token) => {
@@ -24,14 +26,36 @@ export default function LoginPage() {
     setIsRecaptchaVerified(true); // Set to true when reCAPTCHA is completed
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!recaptchaToken) {
       setRecaptchaMessage('Please complete the reCAPTCHA.');
       setIsRecaptchaVerified(false);
       return;
     }
-    
+
+    try {
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCred.user;
+      await user.reload(); // Reload user to get the latest email verification status
+  
+      console.log(user.email); // Log the user's email
+      console.log("here");
+      console.log(user.emailVerified); // Log the email verification status
+  
+      if (user.emailVerified) {
+        console.log("allow sign in");
+        setVerified(true);
+        navigate('/dashboard'); // Redirect to dashboard or desired page
+      } else {
+        setError("Please verify your email.");
+        await sendEmailVerification(user);
+        console.log("Verification email sent again");
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+
     // Proceed with login logic (e.g., send data to backend)
     console.log({ email, password, recaptchaToken });
     // Reset message
@@ -39,117 +63,117 @@ export default function LoginPage() {
   };
 
 
-//   const handleLogin = async (e) => {
-//     e.preventDefault();
-//     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  //   const handleLogin = async (e) => {
+  //     e.preventDefault();
+  //     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-//     if (!emailRegex.test(email)) {
-//       setError("Invalid email address");
-//       return;
-//     }
-//     setError("");
+  //     if (!emailRegex.test(email)) {
+  //       setError("Invalid email address");
+  //       return;
+  //     }
+  //     setError("");
 
-//     dispatch(setIsFetching());
-//     const config = {
-//       method: 'POST',
-//       url: API_URL+'/api/auth/login',
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       data: {
-//         email: email,
-//         password: password,
-//       },
-//       // withCredentials: true,
-//     };
+  //     dispatch(setIsFetching());
+  //     const config = {
+  //       method: 'POST',
+  //       url: API_URL+'/api/auth/login',
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       data: {
+  //         email: email,
+  //         password: password,
+  //       },
+  //       // withCredentials: true,
+  //     };
 
-//     try {
-//       const response = await axios.request(config);
-//       console.log(response.data);
-//       if (response.status === 200) {
-//         console.log('Login success');
-//         const { token, role } = response.data;
-//         dispatch(loginSuccess({ email, role, token }));
+  //     try {
+  //       const response = await axios.request(config);
+  //       console.log(response.data);
+  //       if (response.status === 200) {
+  //         console.log('Login success');
+  //         const { token, role } = response.data;
+  //         dispatch(loginSuccess({ email, role, token }));
 
-//         navigate('/redirect');
-//       } else {
-//         dispatch(loginFailure());
-//         console.log('Login failed');
-//       }
-//     } catch (error) {
-//       dispatch(loginFailure());
-//       console.error('Error during login:', error.message);
-//       console.error('Full error:', error);
-//     }
-//   };
+  //         navigate('/redirect');
+  //       } else {
+  //         dispatch(loginFailure());
+  //         console.log('Login failed');
+  //       }
+  //     } catch (error) {
+  //       dispatch(loginFailure());
+  //       console.error('Error during login:', error.message);
+  //       console.error('Full error:', error);
+  //     }
+  //   };
 
   return (
 
     <div className="flex flex-row gap-2">
       <div className="flex min-h-full mt-20 flex-1 flex-col justify-center ml-4 py-12  hidden md:block">
-        <Lottie animationData={AlumniAnimation} className="h-full w-full"/>
+        <Lottie animationData={AlumniAnimation} className="h-full w-full" />
       </div>
       <div className="flex min-h-full flex-1 flex-col justify-center lg:mr-52 py-12 mt-20 ">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-      <h2 className="mt-10 text-center text-4xl font-bold leading-9 tracking-tight text-[#4a2c2a]">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+          <h2 className="mt-10 text-center text-4xl font-bold leading-9 tracking-tight text-[#4a2c2a]">
             Sign In
           </h2>
-      </div>
+        </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form action="#" method="POST" className="space-y-6" onSubmit={handleSubmit}>
-          <div className="flex flex-col">
-            <label
-              htmlFor="email"
-              className="flex text-sm font-medium text-gray-900 outline-none" 
-                
-            >
-              Email address
-            </label>
-            <div className="mt-2">
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-                className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+          <form action="#" method="POST" className="space-y-6" onSubmit={handleSubmit}>
+            <div className="flex flex-col">
+              <label
+                htmlFor="email"
+                className="flex text-sm font-medium text-gray-900 outline-none"
 
-          <div className="relative">
-            <label
-              htmlFor="password"
-              className="block text-sm flex font-medium text-gray-900"
-              style={{ outline: 'none' }} 
-            >
-              Password
-            </label>
-            <div className="mt-2 relative">
-              <input
-                id="password"
-                name="password"
-                type={showPassword ? 'text' : 'password'}
-                required
-                autoComplete="current-password"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:font-semibold focus:ring-2 sm:text-sm sm:leading-6 pr-10" 
-              />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#cb0100] hover:text-gray-600"
               >
-                {showPassword ? <FaEyeSlash size={24} /> : <FaEye size={24} />}
-              </button>
+                Email address
+              </label>
+              <div className="mt-2">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                  className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6"
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="w-full flex justify-center">
+            <div className="relative">
+              <label
+                htmlFor="password"
+                className="block text-sm flex font-medium text-gray-900"
+                style={{ outline: 'none' }}
+              >
+                Password
+              </label>
+              <div className="mt-2 relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  autoComplete="current-password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:font-semibold focus:ring-2 sm:text-sm sm:leading-6 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#cb0100] hover:text-gray-600"
+                >
+                  {showPassword ? <FaEyeSlash size={24} /> : <FaEye size={24} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="w-full flex justify-center">
               <ReCAPTCHA
                 sitekey="6Ld8OUcqAAAAAIPAq8cSVeA1QVzB826prjigIWMk"
                 onChange={handleRecaptchaChange}
@@ -163,23 +187,25 @@ export default function LoginPage() {
             )}
 
             <div>
-              <button
+              {verified && (
+                <button
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-[#cb0100] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cb0100]"
               >
                 Sign in
               </button>
+              )}
             </div>
-          <div className='flex gap-2 text-sm mt-5 justify-center'>
-            <span>Don't have an account?</span>
-            <Link to='/' className='text-blue-500'>
-              Sign Up
-            </Link>
-          </div>
-        </form>
+            <div className='flex gap-2 text-sm mt-5 justify-center'>
+              <span>Don't have an account?</span>
+              <Link to='/' className='text-blue-500'>
+                Sign Up
+              </Link>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-    </div>
-    
+
   );
 }

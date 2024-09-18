@@ -13,6 +13,7 @@ function App() {
       <Routes>
         <Route path='/' element = {<><Navbar/> <SignUpPage/></>}/>
         <Route path='/sign-in' element = {<><Navbar/> <LoginPage/></>} />
+        <Route path='/apply' element = {<><Navbar/> <FileUpload/></>} />
       </Routes>
     </BrowserRouter>
   )
