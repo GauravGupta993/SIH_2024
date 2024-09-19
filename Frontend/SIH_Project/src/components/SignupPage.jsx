@@ -456,6 +456,7 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
+  const [fullName, setfullName] = useState("");
   const [age, setAge] = useState("");
   const role = "academics";
   const [error, setError] = useState("");
@@ -491,7 +492,7 @@ export default function SignUpPage() {
     setIsRecaptchaVerified(true); // Set to true when reCAPTCHA is completed
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!recaptchaToken) {
       setError("Please complete the reCAPTCHA.");
@@ -502,9 +503,60 @@ export default function SignUpPage() {
     // signUpAction();
     // Proceed with the form submission (e.g., send data to backend)
     console.log({ email, password, name, age, recaptchaToken });
+    console.log({ email, password, name, age, recaptchaToken });
+    setfullName(name);
+    const body2 = {fullName, email};
+    const response1 = await fetch(
+      'http://localhost:8000/api/register',
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify(body2)
+      }
+    );
+    const parseRes2 = await response1.json();
+    localStorage.setItem('userid', parseRes2.user.id);
+    localStorage.setItem('useremail', parseRes2.user.email);
+    console.log(parseRes2);
+    console.log(parseRes2.user);
+    console.log(parseRes2.user);
+
+    const body = {  email, password, name, age };
+    const response = await fetch(
+      'http://127.0.0.1:8080/api/v1/auth/auth/register',
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify(body)
+      }
+    );
+    // const response = await fetch(
+    //   'https://dummyjson.com/posts/add',
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-type": "application/json"
+    //     },
+    //     body: JSON.stringify({ "title": "I am in love with someone.", "userId": 5})
+    //   }
+    // );
+
+    const parseRes = await response.json();
+    console.log(parseRes);
+    const data = response;
+    const token = parseRes.access_token;
+
+    // Save the JWT token to localStorage
+    localStorage.setItem('jwtToken', "token");
+    
     // Reset error state
     setError("");
     setRecaptchaMessage(false);
+        window.location.reload();
   };
 
   return (

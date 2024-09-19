@@ -115,6 +115,15 @@ function App() {
               )
             }
           />
+          <Route path="/chat"
+            element={
+              isAuthenticated == 1 ? (
+                <ChatRoom/>
+              ) : (
+                <><Navbar/><LoginPage/><Footer/></>
+              )
+            }
+          />
         {/* <Route path='/' element = {<><Navbar/> <SignUpPage/></>}/>
         <Route path='/sign-in' element = {<><Navbar/> <LoginPage/></>} /> */}
       </Routes>

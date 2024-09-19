@@ -64,6 +64,24 @@ export default function LoginPage() {
 
     // Save the JWT token to localStorage
     localStorage.setItem('jwtToken', token);
+
+    const body2 = {email};
+    const response1 = await fetch(
+      'http://localhost:8000/api/login',
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify(body2)
+      }
+    );
+    const parseRes2 = await response1.json();
+    localStorage.setItem('userid', parseRes2.user.id);
+    localStorage.setItem('useremail', parseRes2.user.email);
+    console.log(parseRes2);
+    console.log(parseRes2.user);
+
     setRecaptchaMessage('');
     window.location.reload();
   };
