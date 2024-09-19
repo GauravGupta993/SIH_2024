@@ -439,7 +439,8 @@
 //     </div>
 //   );
 // }
-import { createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js";
+
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { auth } from "../config/firebase.config";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
@@ -461,6 +462,19 @@ export default function SignUpPage() {
   const [recaptchaToken, setRecaptchaToken] = useState("");
   const [isRecaptchaVerified, setIsRecaptchaVerified] = useState(false);
   const [RecaptchaMessage, setRecaptchaMessage] = useState(false);
+
+  const signUpAction = async () => {
+    try {
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCred.user;
+      console.log(user);
+      await sendEmailVerification(user);
+      console.log("success");
+    } catch (error) {
+      setError(error.message);
+      console.error("Error during sign-up:", error);
+    }
+  };
 
   const togglePasswordVisibility = (e) => {
     e.preventDefault();
@@ -485,62 +499,13 @@ export default function SignUpPage() {
       setRecaptchaMessage(true);
       return;
     }
-
+    // signUpAction();
     // Proceed with the form submission (e.g., send data to backend)
     console.log({ email, password, name, age, recaptchaToken });
     // Reset error state
     setError("");
     setRecaptchaMessage(false);
   };
-
-  // const handleSignUp = async (e) => {
-  //     e.preventDefault();
-  //     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-  //     if (!emailRegex.test(email)) {
-  //         setError('Invalid email address');
-  //         return;
-  //     }
-  //     setError('');
-
-  //     dispatch(setIsFetching());
-  //     const config = {
-  //         method: 'POST',
-  //         url: API_URL+'/api/auth/register',
-  //         headers: {
-  //             'Content-Type': 'application/json',
-  //         },
-  //         data: {
-  //             email: email,
-  //             password: password,
-  //             name: name,
-  //             age: age,
-  //             role: role,
-  //         },
-  //         withCredentials: true,
-  //     };
-
-  //     try {
-  //         const response = await axios.request(config);
-  //         console.log(response.data);
-  //         if (response.status === 200) {
-  //             console.log('Signup success');
-  //             const { token, role } = response.data;
-  //             console.log(role);
-  //             // const { email, role } = user;
-  //             dispatch(loginSuccess({ email, role, token }));
-
-  //             navigate('/redirect');
-  //         } else {
-  //             dispatch(loginFailure());
-  //             console.log('Signup failed');
-  //         }
-  //     } catch (error) {
-  //         dispatch(loginFailure());
-  //         console.error('Error during signup:', error.message);
-  //         console.error('Full error:', error);
-  //     }
-  // };
 
   return (
     <div className="flex flex-row gap-2">
@@ -553,7 +518,7 @@ export default function SignUpPage() {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form
-            action="#"
+            // action="#"
             method="POST"
             className="space-y-4"
             onSubmit={handleSubmit}
@@ -643,7 +608,7 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            
+
 
             <div className="flex flex-col">
               <label
@@ -716,19 +681,20 @@ export default function SignUpPage() {
                 onChange={handleRecaptchaChange}
               />
             </div>
-
+            <button
+              type="submit"
+              // onClick={handleSubmit}
+              className="flex w-full justify-center rounded-md hover:bg-[#cd882a] bg-[#4a2c2a] hover:text-[#4a2c2a] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cb0100]"
+            >
+              Sign up
+            </button>
             <div>
               {RecaptchaMessage && (
                 <p className="text-red-500 text-sm mb-2">
                   Please complete the reCAPTCHA to enable the submit button.
                 </p>
               )}
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md hover:bg-[#cd882a] bg-[#4a2c2a] hover:text-[#4a2c2a] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cb0100]"
-              >
-                Sign up
-              </button>
+
             </div>
             <div className="flex gap-2 text-sm mt-5 justify-center">
               <span>Have an account?</span>
@@ -737,6 +703,13 @@ export default function SignUpPage() {
               </Link>
             </div>
           </form>
+          <button
+              // type="submit"
+              onClick={signUpAction}
+              className="flex w-full justify-center rounded-md hover:bg-[#cd882a] bg-[#4a2c2a] hover:text-[#4a2c2a] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cb0100]"
+            >
+              Get Verification Link on Email
+            </button>
         </div>
       </div>
       <div className="flex max-h-full mt-20 flex-1 flex-col justify-center ml-4 py-12  hidden md:block">
