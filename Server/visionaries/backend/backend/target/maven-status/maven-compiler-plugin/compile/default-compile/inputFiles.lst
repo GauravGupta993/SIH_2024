@@ -2,6 +2,7 @@ E:\projects\SIH_2024\Server\visionaries\backend\backend\src\main\java\com\vision
 E:\projects\SIH_2024\Server\visionaries\backend\backend\src\main\java\com\visionaries\backend\config\JwtService.java
 E:\projects\SIH_2024\Server\visionaries\backend\backend\src\main\java\com\visionaries\backend\user\UserController.java
 E:\projects\SIH_2024\Server\visionaries\backend\backend\src\main\java\com\visionaries\backend\config\JwtAuthenticationFilter.java
+E:\projects\SIH_2024\Server\visionaries\backend\backend\src\main\java\com\visionaries\backend\config\WebConfig.java
 E:\projects\SIH_2024\Server\visionaries\backend\backend\src\main\java\com\visionaries\backend\config\SecurityConfiguration.java
 E:\projects\SIH_2024\Server\visionaries\backend\backend\src\main\java\com\visionaries\backend\config\OpenApiConfig.java
 E:\projects\SIH_2024\Server\visionaries\backend\backend\src\main\java\com\visionaries\backend\user\Role.java
