@@ -70,7 +70,7 @@ const JobPortal = () => {
   const [feedback, setFeedback] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const API_BASE_URL = 'api url'; // Replace with your backend api
+  const API_BASE_URL = ''; // Replace with your backend api
 
   const handleAddJob = async () => {
     if (!jobTitle || !companyName || !jobType || !stipend || !description || !location) {
@@ -91,7 +91,7 @@ const JobPortal = () => {
     };
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/jobs`, newJob);
+      const response = await axios.post('127.0.0.1:8080/api/v1/jobs/create', newJob);
       setJobs([...jobs, response.data]);
       setIsModalOpen(false);
       resetForm();
