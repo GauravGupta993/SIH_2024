@@ -12,6 +12,7 @@ import Navbar from './components/Navbar'
 import EventSection from './components/EventSection.jsx';
 import UploadResume from './components/UploadResume.jsx';
 import SeeResumeScore from './components/SeeResumeScore.jsx';
+import ChatRoom from './components/ChatRoom.jsx';
 function App() {
 
   const [isAuthenticated, setIsAuthenticated] = useState(1);
@@ -115,7 +116,7 @@ function App() {
               )
             }
           />
-          <Route path="/chat"
+          {/* <Route path="/chat"
             element={
               isAuthenticated == 1 ? (
                 <ChatRoom/>
@@ -123,7 +124,7 @@ function App() {
                 <><Navbar/><LoginPage/><Footer/></>
               )
             }
-          />
+          /> */}
         {/* <Route path='/' element = {<><Navbar/> <SignUpPage/></>}/>
         <Route path='/sign-in' element = {<><Navbar/> <LoginPage/></>} /> */}
       </Routes>
