@@ -32,7 +32,8 @@ public class AuthenticationService {
         .firstname(request.getFirstname())
         .lastname(request.getLastname())
             .college(request.getCollege())
-
+            .job(0)
+            .refer(0)
             .image(request.getImage())
             .position(request.getPosition())
         .email(request.getEmail())

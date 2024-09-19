@@ -18,6 +18,8 @@ public class ProfileResponse {
     String skills;
     String college;
     String position;
+    int refer;
+    Integer job;
     int projects;
     float rating;
     String image;

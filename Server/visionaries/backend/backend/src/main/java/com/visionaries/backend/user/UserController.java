@@ -33,7 +33,7 @@ public class UserController {
                 .firstname(user1.getFirstname())
                 .lastname(user1.getLastname())
                 .skills(user1.getSkills())
-                .projects(user1.getProjects())
+
                 .position(user1.getPosition())
                 .image(user1.getImage())
                 .college(user1.getCollege())
@@ -58,7 +58,7 @@ public class UserController {
                 .lastname(user1.getLastname())
                 .skills(user1.getSkills())
                 .rating(user1.getRating())
-                .projects(user1.getProjects())
+
                 .position(user1.getPosition())
                 .image(user1.getImage())
                 .status(user1.getStatus())
