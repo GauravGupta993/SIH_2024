@@ -3,7 +3,11 @@ import axios from 'axios';
 
 const AlumniPost = () => {
   const [postContent, setPostContent] = useState('');
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([
+    {id:1,content:'Excited to share our new project milestone! 🎉'},
+    { id: 2, content: 'Looking for feedback on my latest research paper. 📚' },
+    { id: 3, content: 'Great networking opportunity at the upcoming conference. Join us! 🌟' }
+  ]);
   const [feedback, setFeedback] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
