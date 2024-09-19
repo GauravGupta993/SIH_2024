@@ -1,64 +1,28 @@
 from flask import Flask, request, jsonify, render_template
-import gensim.downloader as api
-import numpy as np
+from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
-import nltk
 from pypdf import PdfReader
 import os
-
-from flask_cors import CORS
-
-app = Flask(__name__)
-CORS(app)
 
 # Initialize Flask app
 app = Flask(__name__)
 
-# Download NLTK data (if not already downloaded)
-nltk.download('punkt')
-nltk.download('stopwords')
+# Initialize the Sentence Transformer model using BERT with mean-tokens pooling
+model = SentenceTransformer('bert-base-nli-mean-tokens')
 
-# Load pre-trained Word2Vec model (e.g., Google News vectors)
-model = api.load("word2vec-google-news-300")  # This loads the 300-dimensional Google News Word2Vec model
+# Function to extract text from PDF
+def extract_text_from_pdf(pdf_path):
+    reader = PdfReader(pdf_path)
+    page = reader.pages[0]
+    text = page.extract_text()
+    return text
 
-# Function to preprocess text
-def preprocess(text):
-    # Tokenize text and remove stopwords
-    stop_words = set(stopwords.words('english'))
-    tokens = word_tokenize(text.lower())  # Convert to lowercase and tokenize
-    tokens = [word for word in tokens if word.isalpha() and word not in stop_words]  # Remove non-alphabetic tokens and stopwords
-    return tokens
-
-# Function to get the average Word2Vec embedding for a text
-def get_average_word2vec(tokens, model):
-    # Only include tokens that are in the Word2Vec model's vocabulary
-    valid_tokens = [word for word in tokens if word in model.key_to_index]
-    
-    if not valid_tokens:  # If no valid tokens, return a zero vector
-        return np.zeros(model.vector_size)
-    
-    # Get the Word2Vec embeddings for the valid tokens and calculate the mean
-    word_vectors = np.array([model[word] for word in valid_tokens])
-    return np.mean(word_vectors, axis=0)
-
-# Function to calculate cosine similarity between two texts
-def calculate_similarity(text1, text2, model):
-    # Preprocess both texts
-    tokens1 = preprocess(text1)
-    tokens2 = preprocess(text2)
-    
-    # Get average Word2Vec embeddings
-    vector1 = get_average_word2vec(tokens1, model)
-    vector2 = get_average_word2vec(tokens2, model)
-    
-    # Reshape vectors for cosine similarity calculation
-    vector1 = vector1.reshape(1, -1)
-    vector2 = vector2.reshape(1, -1)
-    
-    # Calculate and return cosine similarity
-    return cosine_similarity(vector1, vector2)[0][0]
+# Function to calculate similarity
+def calculate_similarity(text1, text2):
+    sentences = [text1, text2]
+    sentence_embeddings = model.encode(sentences)
+    similarity_scores = cosine_similarity([sentence_embeddings[0]], sentence_embeddings[1:])
+    return similarity_scores[0][0]
 
 @app.route('/')
 def index():
@@ -79,15 +43,13 @@ def upload_file():
         file.save(file_path)
 
         # Extract text from the PDF
-        reader = PdfReader(file_path)
-        page = reader.pages[0]
-        text1 = page.extract_text()
+        resume_text = extract_text_from_pdf(file_path)
 
         # Example job description text
-        text2 = request.form.get('job_description', '')
+        job_description = request.form.get('job_description', '')
 
         # Calculate similarity
-        similarity_score = calculate_similarity(text1, text2, model)
+        similarity_score = calculate_similarity(resume_text, job_description)
 
         # Remove the temporary file
         os.remove(file_path)
