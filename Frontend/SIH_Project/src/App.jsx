@@ -10,9 +10,11 @@ import SignUpPage from './components/SignupPage'
 import Home from './components/Home.jsx'
 import Navbar from './components/Navbar'
 import EventSection from './components/EventSection.jsx';
+import UploadResume from './components/UploadResume.jsx';
+import SeeResumeScore from './components/SeeResumeScore.jsx';
 function App() {
 
-  const [isAuthenticated, setIsAuthenticated] = useState(0);
+  const [isAuthenticated, setIsAuthenticated] = useState(1);
   const [Role, setRole] = useState(0);
 
   const [username, setusername] = useState(localStorage.jwtToken);
@@ -35,7 +37,7 @@ function App() {
         setIsAuthenticated(1);
       }
       else{
-        setIsAuthenticated(0);
+        setIsAuthenticated(1);
       }
       // parseRes === 1 ? setIsAuthenticated(1) :  setIsAuthenticated(0);
       // console.log(parseRes);
@@ -80,6 +82,30 @@ function App() {
               )
             }
           />
+          <Route path="/apply"
+            element={
+              isAuthenticated == 1 ? (
+                Role=="Alumini"?<UploadResume/>:<SeeResumeScore/>
+              ) : (
+                <><Navbar/><SignUpPage/><Footer/></>
+                // <LandingPage/>
+                
+              )
+              // <UploadResume/>
+            }
+          />
+          {/* <Route path="/see-score"
+            element={
+              isAuthenticated == 1 ? (
+                Role=="Alumini"?<UploadResume/>:<SeeResumeScore/>
+              ) : (
+                <><Navbar/><SignUpPage/><Footer/></>
+                // <LandingPage/>
+                
+              )
+              // <SeeResumeScore/>
+            }
+          /> */}
           <Route path="/sign-in"
             element={
               isAuthenticated == 1 ? (
