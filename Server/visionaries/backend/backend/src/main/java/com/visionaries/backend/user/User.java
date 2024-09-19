@@ -1,5 +1,6 @@
 package com.visionaries.backend.user;
 
+import com.visionaries.backend.jobs.Jobs;
 import com.visionaries.backend.token.Token;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -34,7 +35,8 @@ public class User implements UserDetails {
   private String image;
   private String college;
   private String skills;
-  private  int projects;
+  private Integer job=0;
+  private  int refer=0;
   private float rating;
   private String position;
   @Column(columnDefinition = "boolean default false")
@@ -45,6 +47,8 @@ public class User implements UserDetails {
   @JsonIgnore
   @OneToMany(mappedBy = "user")
   private List<Token> tokens;
+  @OneToMany(mappedBy = "user")
+  private List<Jobs> jobs;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
