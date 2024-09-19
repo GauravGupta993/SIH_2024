@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const JobPortal = () => {
   const [jobs, setJobs] = useState([]);
@@ -8,59 +9,48 @@ const JobPortal = () => {
   const [jobType, setJobType] = useState('');
   const [stipend, setStipend] = useState('');
   const [description, setDescription] = useState('');
-  const [expandedJobId, setExpandedJobId] = useState(null);
-  const [referredStudents, setReferredStudents] = useState({});
   const [feedback, setFeedback] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const demoStudents = [
-    { id: 1, name: 'John Doe', atsScore: 80 },
-    { id: 2, name: 'Jane Smith', atsScore: 75 },
-    { id: 3, name: 'Sam Wilson', atsScore: 65 },
-    { id: 4, name: 'Alex Johnson', atsScore: 70 },
-  ];
+  const API_BASE_URL = 'apiurl'; // Replace with backend API 
 
-  const handleAddJob = () => {
+  const handleAddJob = async () => {
     if (!jobTitle || !companyName || !jobType || !stipend || !description) {
       setFeedback('All fields are required!');
       return;
     }
 
+    setIsLoading(true);
+    setFeedback('');
+
     const newJob = {
-      id: jobs.length + 1,
       title: jobTitle,
       company: companyName,
       jobType,
       stipend,
       description,
-      postedDate: new Date().toLocaleDateString(),
-      responses: demoStudents,
     };
 
-    setJobs([...jobs, newJob]);
-    setIsModalOpen(false); // Close the modal after posting the job
+    try {
+      const response = await axios.post(`${API_BASE_URL}/api/jobs`, newJob);
+      setJobs([...jobs, response.data]);
+      setIsModalOpen(false);
+      resetForm();
+      setFeedback('Job posted successfully!');
+    } catch (error) {
+      console.error('Error adding job:', error);
+      setFeedback('Failed to post job. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resetForm = () => {
     setJobTitle('');
     setCompanyName('');
     setJobType('');
     setStipend('');
     setDescription('');
-    setFeedback('Job posted successfully!');
-  };
-
-  const viewResponses = (jobId) => {
-    // Toggle the expanded job, ensuring only one job is expanded at a time
-    setExpandedJobId(expandedJobId === jobId ? null : jobId);
-  };
-
-  const provideReferral = (student, jobId) => {
-    if (!referredStudents[jobId]) referredStudents[jobId] = [];
-
-    if (!referredStudents[jobId].includes(student.id)) {
-      referredStudents[jobId].push(student.id);
-      setReferredStudents({ ...referredStudents });
-      setFeedback(`You referred ${student.name} successfully!`);
-    } else {
-      setFeedback(`${student.name} has already been referred!`);
-    }
   };
 
   return (
@@ -76,67 +66,17 @@ const JobPortal = () => {
         </button>
       </div>
 
-      {/* Job List - Displayed Horizontally */}
+      {/* Job List */}
       <div className="job-list flex flex-col space-y-4 py-4">
-        {jobs.length === 0 ? (
-          <p>No jobs posted yet.</p>
-        ) : (
-          jobs.map((job) => (
-            <div
-              key={job.id}
-              className="job bg-white p-4 shadow-lg rounded-lg"
-            >
-              <h4 className="text-lg font-semibold text-gray-900">{job.title}</h4>
-              <p className="text-gray-700">{job.company}</p>
-              <p className="text-gray-600">{job.jobType}</p>
-              <p className="text-gray-600">Stipend: {job.stipend}</p>
-              <p className="text-gray-700">{job.description}</p>
-              <div className="flex justify-between items-center text-sm text-gray-600 mb-4">
-                <span>Posted: {job.postedDate}</span>
-              </div>
-
-              <button
-                onClick={() => viewResponses(job.id)}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
-              >
-                {expandedJobId === job.id ? 'Hide Student Responses' : 'View Student Responses'}
-              </button>
-
-              {/* Student Responses Section */}
-              {expandedJobId === job.id && (
-                <div className="responses mt-4 bg-gray-100 p-4 rounded-lg">
-                  <h4 className="text-lg font-semibold text-gray-900">Student Responses</h4>
-                  {job.responses.map((student) => (
-                    <div
-                      key={student.id}
-                      className="flex justify-between items-center bg-white shadow-sm p-3 my-2 rounded-lg"
-                    >
-                      <span className="text-gray-800 font-medium">
-                        {student.name} - ATS Score: {student.atsScore}%
-                      </span>
-                      <button
-                        className={`py-1 px-3 rounded-lg font-semibold ${
-                          referredStudents[job.id]?.includes(student.id)
-                            ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-                            : student.atsScore >= 70 && student.atsScore <= 80
-                            ? 'bg-green-500 hover:bg-green-600 text-white'
-                            : 'bg-gray-400 text-gray-600 cursor-not-allowed'
-                        }`}
-                        disabled={
-                          referredStudents[job.id]?.includes(student.id) ||
-                          !(student.atsScore >= 70 && student.atsScore <= 80)
-                        }
-                        onClick={() => provideReferral(student, job.id)}
-                      >
-                        {referredStudents[job.id]?.includes(student.id) ? 'Referred' : 'Provide Referral'}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))
-        )}
+        {jobs.map((job) => (
+          <div key={job.id} className="job bg-white p-4 shadow-lg rounded-lg">
+            <h4 className="text-lg font-semibold text-gray-900">{job.title}</h4>
+            <p className="text-gray-700">{job.company}</p>
+            <p className="text-gray-600">{job.jobType}</p>
+            <p className="text-gray-600">Stipend: {job.stipend}</p>
+            <p className="text-gray-700">{job.description}</p>
+          </div>
+        ))}
       </div>
 
       {/* Modal for Job Creation */}
@@ -193,9 +133,12 @@ const JobPortal = () => {
               </button>
               <button
                 onClick={handleAddJob}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
+                disabled={isLoading}
+                className={`${
+                  isLoading ? 'bg-blue-300' : 'bg-blue-500 hover:bg-blue-600'
+                } text-white font-semibold py-2 px-4 rounded-lg`}
               >
-                Post Job
+                {isLoading ? 'Posting...' : 'Post Job'}
               </button>
             </div>
           </div>
@@ -204,7 +147,9 @@ const JobPortal = () => {
 
       {/* Feedback Message */}
       {feedback && (
-        <div className="mt-4 text-green-600 font-semibold">{feedback}</div>
+        <div className={`mt-4 font-semibold ${feedback.includes('Failed') ? 'text-red-600' : 'text-green-600'}`}>
+          {feedback}
+        </div>
       )}
     </div>
   );
